@@ -27,10 +27,10 @@ public class CrewInfo {
     @JoinColumn(name = "user_id")
     private User crewInfoUser;
 
-    @OneToMany(mappedBy = "crewInfoComment")
+    @OneToMany(mappedBy = "crewInfoFromComment")
     private List<CrewInfoComment> crewInfoCommentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "crewInfoImage")
+    @OneToMany(mappedBy = "crewInfoFromImage")
     private List<CrewInfoImage> crewInfoImageList = new ArrayList<>();
 
     private String title;
