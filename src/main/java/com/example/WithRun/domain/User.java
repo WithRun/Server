@@ -24,7 +24,7 @@ public class User {
     private Long id;
 
     @NotNull
-    private String name;
+    private String username;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -61,6 +61,10 @@ public class User {
     @JoinColumn(name = "user_image_id")
     private UserImage myImage;
 
+    @NotNull
+    private String userID;
+    @NotNull
+    private String userPassword;
     private int userLatitude;
     private int userLongitude;
 

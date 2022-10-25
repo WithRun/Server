@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,12 +25,13 @@ public class RecruitPost {
     @OneToMany(mappedBy = "recruitMemberRecruitPost")
     private List<RecruitMember> recruitMemberList;
 
+    @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name="recruit_post_id"))
+    private List<Tag> tagList = new ArrayList<>();
+
     private String title;
     private String content;
     private String author;
-    private Tag tag1;
-    private Tag tag2;
-    private Tag tag3;
     private boolean isClosed;
     private int limitNum;
     private boolean isApplied;
@@ -37,4 +39,8 @@ public class RecruitPost {
     private String province;
     private String city;
     private String district;
+
+    public void addTag(Tag tag){
+        this.tagList.add(tag);
+    }
 }
