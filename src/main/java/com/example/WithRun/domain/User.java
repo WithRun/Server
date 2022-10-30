@@ -63,11 +63,13 @@ public class User {
 
     @NotNull
     private String userID;
-    @NotNull
+
     private String userPassword;
+    private String email;
     private int userLatitude;
     private int userLongitude;
 
+    private String token;
+
     private int level;
-    private boolean signup_agree = false;
 }
