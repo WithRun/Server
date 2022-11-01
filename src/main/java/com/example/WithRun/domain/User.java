@@ -61,11 +61,15 @@ public class User {
     @JoinColumn(name = "user_image_id")
     private UserImage myImage;
 
-    @NotNull
     private String userID;
 
     private String userPassword;
     private String email;
+
+    private String role;
+
+    private String provider;
+    private String providerId;
     private int userLatitude;
     private int userLongitude;
 

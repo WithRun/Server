@@ -7,7 +7,12 @@ import com.example.WithRun.service.AuthService;
 import com.example.WithRun.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("auth")
@@ -48,12 +53,6 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> login(@RequestBody SignInDTO signInDTO){
-        //signinDTO를 검증한다 User가 진짜 있는지 쳌크
-        // 그리고 password겁증한다. Authservice에서 bool값으로 true 나오면 검증완료
-        // Tokne 주기
-        // 준 토큰을 SigninDTO 넣어서가 아니고 User에 넣어야되는데 User에 저장
-        // User리턴하면 되나?
-
         User getUserInRepo = authService.getUserInRepo(signInDTO);
         String token = authService.createToken(getUserInRepo);
 

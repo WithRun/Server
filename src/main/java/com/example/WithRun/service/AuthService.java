@@ -38,7 +38,7 @@ public class AuthService {
 
         User newUser = User.builder().userID(signUpDTO.getUserId()).email(signUpDTO.getEmail())
                 .userPassword(passwordEncoder.encode(signUpDTO.getPassword())
-                ).level(0).username(signUpDTO.getUsername())
+                ).level(0).username(signUpDTO.getUsername()).role("ROLE_USER")
                 .gender(signUpDTO.getGender()).build();
 
         userRepository.save(newUser);
