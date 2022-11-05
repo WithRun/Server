@@ -1,9 +1,6 @@
 package com.example.WithRun.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import net.bytebuddy.matcher.FilterableList;
 
 import javax.persistence.*;

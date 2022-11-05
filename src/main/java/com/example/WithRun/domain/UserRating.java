@@ -1,19 +1,20 @@
 package com.example.WithRun.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 public class UserRating {
 
     @Id
@@ -27,7 +28,21 @@ public class UserRating {
     @JoinColumn(name = "user_id")
     private User ratedUser;
 
-    private int rating;
+    private Long ratingUserId;
+
+    private double rating;
     private LocalDateTime created_at;
 
+    //====================//
+
+    public void setUser(User targetUser) {
+//        UserRating userRating = new UserRating();
+        if (this.ratedUser != null) {
+            this.ratedUser.getRatedUserList().remove(this);
+        }
+        this.ratedUser = targetUser;
+        if (!targetUser.getRatedUserList().contains(this)) {
+            targetUser.addRatedUserList(this);
+        }
+    }
 }

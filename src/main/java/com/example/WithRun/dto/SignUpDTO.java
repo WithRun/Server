@@ -2,10 +2,7 @@ package com.example.WithRun.dto;
 
 import com.example.WithRun.domain.Gender;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder

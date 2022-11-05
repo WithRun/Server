@@ -1,18 +1,19 @@
 package com.example.WithRun.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -26,7 +27,7 @@ public class User {
     @NotNull
     private String username;
 
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @OneToMany(mappedBy = "ratedUser")
@@ -35,12 +36,12 @@ public class User {
     @ElementCollection
     @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "following_username")
-    private List<String> followingList = new ArrayList<>();
+    private List<Long> followingList = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "follower_username")
-    private List<String> followerList = new ArrayList<>();
+    private List<Long> followerList = new ArrayList<>();
 
     @OneToMany(mappedBy = "freePostUser")
     private List<FreePost> myFreePostList = new ArrayList<>();
@@ -76,4 +77,29 @@ public class User {
     private String token;
 
     private int level;
+
+
+    // ==============================//
+    public void addFollowingList(User followUser){
+        getFollowingList().add(followUser.id);
+        followUser.getFollowerList().add(this.id);
+    }
+
+    public void addFollowerList(User followUser){
+        getFollowerList().add(followUser.id);
+        followUser.getFollowingList().add(this.id);
+    }
+
+    public void deleteFollowingList(User unfollowUser){
+        getFollowingList().remove(unfollowUser.id);
+        unfollowUser.getFollowerList().remove(this.id);
+    }
+
+    public void addRatedUserList(UserRating userRating){
+        this.ratedUserList.add(userRating);
+        if(userRating.getRatedUser() != this)
+            userRating.setRatedUser(this);
+//        targetUser.getRatedUserList().add(userRating);
+    }
+
 }
