@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class UserRating {
 
     @Id
@@ -44,5 +44,12 @@ public class UserRating {
         if (!targetUser.getRatedUserList().contains(this)) {
             targetUser.addRatedUserList(this);
         }
+    }
+
+    public void duplicateRating(User user) throws Exception {
+        if (this.getRatingUserId() == user.getId()){
+            throw new Exception("duplicate comment by one user");
+        }
+
     }
 }

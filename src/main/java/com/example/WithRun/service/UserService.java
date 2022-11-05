@@ -67,19 +67,20 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserRating rateUser(String userId, RatingDTO ratingDTO) {
+    public UserRating rateUser(String userId, RatingDTO ratingDTO) throws Exception {
         User targetUser = getUserById(ratingDTO.getTargetUserId());
         User user = getUserById(userId);
+        for(UserRating userRating : targetUser.getRatedUserList()){
+            userRating.duplicateRating(user);
+        }
+
         UserRating userRating = UserRating.builder()
                 .rating(Double.parseDouble(ratingDTO.getRate()))
-                .ratingUserId(Long.parseLong(userId))
+                .ratingUserId(Long.parseLong(userId)).ratedUser(targetUser)
                 .userComment(ratingDTO.getComment()).build();
-        userRating.setUser(targetUser);
+
         userRatingRepository.save(userRating);
-//        user.addRatedUserList(targetUser,userRating);
-        System.out.println("@@@@@@@" + userRating);
-//        userRepository.save(user);
-        System.out.println("#########"+targetUser);
+        userRepository.save(targetUser);
         return userRating;
     }
 

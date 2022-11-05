@@ -92,11 +92,9 @@ public class UserController {
 
     @PostMapping("/userpage/rating")
     public ResponseEntity<?> ratingUser(@AuthenticationPrincipal String id,
-                                        @RequestBody RatingDTO ratingDTO){
+                                        @RequestBody RatingDTO ratingDTO) throws Exception {
         User user = userService.getUserById(id);
-//        User targetUser = userService.getUserById(ratingDTO.getTargetUserId());
         UserRating userRating = userService.rateUser(id, ratingDTO);
-        //User의 userrating에  가서 comment랑 rate를 넣는다
         return ResponseEntity.ok().body(userRating);
     }
 

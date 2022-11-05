@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
