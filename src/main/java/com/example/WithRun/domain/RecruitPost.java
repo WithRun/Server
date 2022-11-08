@@ -24,6 +24,7 @@ public class RecruitPost {
 
     @ElementCollection
     @CollectionTable(joinColumns = @JoinColumn(name="recruit_post_id"))
+    @Builder.Default
     private List<Tag> tagList = new ArrayList<>();
 
     private String title;

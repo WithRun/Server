@@ -26,6 +26,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     TokenProvider tokenProvider;
 
     @Override
+    @SuppressWarnings("unchecked")
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         System.out.println("getAttributes : " + userRequest.getClientRegistration());

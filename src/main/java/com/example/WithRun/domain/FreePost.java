@@ -24,9 +24,11 @@ public class FreePost {
     private User freePostUser;
 
     @OneToMany(mappedBy = "freePostFromComment")
+    @Builder.Default
     private List<FreePostComment> freePostCommentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "freePostFromImage")
+    @Builder.Default
     private List<FreePostImage> freePostImageList = new ArrayList<>();
 
     private String title;

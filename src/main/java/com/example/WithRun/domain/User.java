@@ -31,31 +31,39 @@ public class User {
     private Gender gender;
 
     @OneToMany(mappedBy = "ratedUser")
+    @Builder.Default
     private List<UserRating> ratedUserList = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "following_username")
+    @Builder.Default
     private List<Long> followingList = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "follower_username")
+    @Builder.Default
     private List<Long> followerList = new ArrayList<>();
 
     @OneToMany(mappedBy = "freePostUser")
+    @Builder.Default
     private List<FreePost> myFreePostList = new ArrayList<>();
 
     @OneToMany(mappedBy = "freePostCommentUser")
+    @Builder.Default
     private List<FreePostComment> myFreePostCommentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "crewInfoUser")
+    @Builder.Default
     private List<CrewInfo> myCrewInfoList = new ArrayList<>();
 
     @OneToMany(mappedBy = "crewInfoCommentUser")
+    @Builder.Default
     private List<CrewInfoComment> myCrewInfoCommentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitMemberUser")
+    @Builder.Default
     private List<RecruitMember> recruitMemberList = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

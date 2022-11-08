@@ -25,9 +25,11 @@ public class CrewInfo {
     private User crewInfoUser;
 
     @OneToMany(mappedBy = "crewInfoFromComment")
+    @Builder.Default
     private List<CrewInfoComment> crewInfoCommentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "crewInfoFromImage")
+    @Builder.Default
     private List<CrewInfoImage> crewInfoImageList = new ArrayList<>();
 
     private String title;
