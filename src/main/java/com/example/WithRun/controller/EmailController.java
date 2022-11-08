@@ -1,31 +1,33 @@
 package com.example.WithRun.controller;
 
+import com.example.WithRun.dto.CommonResponseDTO;
 import com.example.WithRun.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("email")
 public class EmailController {
 
     @Autowired
     EmailService emailService;
 
-    @PostMapping("/emailConfirm")
-    public ResponseEntity<?> emailConfirm(@RequestParam String email) throws Exception {
-
+    @PostMapping("/confirm")
+    public ResponseEntity<?> emailConfirm(@RequestHeader String email) throws Exception {
         String confirm = emailService.sendSimpleMessage(email);
-        return ResponseEntity.ok().body(confirm);
+        CommonResponseDTO responseDTO = CommonResponseDTO.builder().message(confirm).build();
+        return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping("/emailcode/verify")
-    public ResponseEntity<?> emailCodeVerify(@RequestParam String code){
+    @PostMapping("/verify")
+    public ResponseEntity<?> emailCodeVerify(@RequestHeader String code){
         if(emailService.ePw.equals(code)){
-            return ResponseEntity.ok("Code verification success.");
+            CommonResponseDTO responseDTO = CommonResponseDTO.builder().message("Code verification success.").build();
+            return ResponseEntity.ok(responseDTO);
         }
-        return ResponseEntity.badRequest().body("Failed verification.");
+        CommonResponseDTO responseDTO = CommonResponseDTO.builder().message("Failed verification.").build();
+        return ResponseEntity.badRequest().body(responseDTO);
     }
 
 

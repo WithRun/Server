@@ -1,6 +1,7 @@
 package com.example.WithRun.controller;
 
 import com.example.WithRun.domain.User;
+import com.example.WithRun.dto.CommonResponseDTO;
 import com.example.WithRun.dto.SignInDTO;
 import com.example.WithRun.dto.SignUpDTO;
 import com.example.WithRun.service.AuthService;
@@ -29,24 +30,39 @@ public class AuthController {
     UserService userService;
 
     @GetMapping("/signup/check/ID")
-    public ResponseEntity<?> checkId(@RequestParam String userId){
-        if(!userService.isExistByUserId(userId))
-            return ResponseEntity.ok().body("사용가능한 ID입니다.");
-        else return ResponseEntity.badRequest().body("이미 존재하는 ID입니다.");
+    public ResponseEntity<?> checkId(@RequestHeader String userId){
+        if(!userService.isExistByUserId(userId)){
+            CommonResponseDTO responseDTO = CommonResponseDTO.builder().message("사용가능한 ID입니다.").build();
+            return ResponseEntity.ok().body(responseDTO);
+        }
+        else{
+            CommonResponseDTO responseDTO = CommonResponseDTO.builder().message("이미 존재하는 ID입니다.").build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
     }
 
     @GetMapping("signup/check/username")
-    public ResponseEntity<?> checkUsername(@RequestParam String username){
-        if(!userService.isExistByUsername(username))
-            return ResponseEntity.ok().body("사용가능한 닉네임입니다.");
-        else return ResponseEntity.badRequest().body("이미 존재하는 닉네임입니다.");
+    public ResponseEntity<?> checkUsername(@RequestHeader String username){
+        if(!userService.isExistByUsername(username)){
+            CommonResponseDTO responseDTO = CommonResponseDTO.builder().message("사용 가능한 닉네임입니다.").build();
+            return ResponseEntity.ok().body(responseDTO);
+        }
+        else{
+            CommonResponseDTO responseDTO = CommonResponseDTO.builder().message("이미 존재하는 닉네임입니다.").build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
     }
 
     @GetMapping("signup/check/email")
-    public ResponseEntity<?> checkEmail(@RequestParam String email){
-        if(!userService.isExistByEmail(email))
-            return ResponseEntity.ok().body("사용가능한 이메일입니다.");
-        else return ResponseEntity.badRequest().body("이미 존재하는 이메일입니다.");
+    public ResponseEntity<?> checkEmail(@RequestHeader String email){
+        if(!userService.isExistByEmail(email)) {
+            CommonResponseDTO responseDTO = CommonResponseDTO.builder().message("사용 가능한 이메일입니다.").build();
+            return ResponseEntity.ok().body(responseDTO);
+        }
+        else{
+            CommonResponseDTO responseDTO = CommonResponseDTO.builder().message("이미 존재하는 닉네임입니다.").build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
     }
 
     @PostMapping("/signup")
@@ -58,14 +74,10 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> login(@RequestBody SignInDTO signInDTO){
         User getUserInRepo = userService.getUserInRepo(signInDTO);
-        String token = authService.createToken(getUserInRepo);
-
-        return ResponseEntity.ok().body(getUserInRepo);
+        if(getUserInRepo.getRole() != null){
+            String token = authService.createToken(getUserInRepo);
+            return ResponseEntity.ok().body(getUserInRepo);
+        }
+        else return ResponseEntity.badRequest().body("WRONG PASSWORD.");
     }
-
-    @GetMapping("/login")
-    public ResponseEntity<?> authlogin(){
-        return null;
-    }
-
 }

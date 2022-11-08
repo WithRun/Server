@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 public class UserService {
 
     @Autowired
@@ -46,7 +48,7 @@ public class UserService {
         if(validateIdAndPassword(signInDTO)){
             return userRepository.findByUserID(signInDTO.getUserId());
         }
-        else return null;
+        else return new User();
     }
 
     public User getUserById(String userId){
@@ -67,17 +69,21 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserRating rateUser(String userId, RatingDTO ratingDTO) throws Exception {
-        User targetUser = getUserById(ratingDTO.getTargetUserId());
+    public UserRating rateUser(String userId, RatingDTO ratingDTO){
+        User targetUser = getUserById(ratingDTO.getTargetId());
         User user = getUserById(userId);
-        for(UserRating userRating : targetUser.getRatedUserList()){
-            userRating.duplicateRating(user);
+        for(UserRating userRating : targetUser.getRatedUserList()) {
+            if(userRating.duplicateRating(user)){
+                return null;
+            }
         }
-
         UserRating userRating = UserRating.builder()
                 .rating(Double.parseDouble(ratingDTO.getRate()))
                 .ratingUserId(Long.parseLong(userId)).ratedUser(targetUser)
                 .userComment(ratingDTO.getComment()).build();
+
+        targetUser.getRatedUserList().add(userRating);
+        targetUser.setMyLevel();
 
         userRatingRepository.save(userRating);
         userRepository.save(targetUser);

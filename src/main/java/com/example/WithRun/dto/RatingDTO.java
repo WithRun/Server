@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 public class RatingDTO {
 
-    private String targetUserId;
+    private String targetId;
     private String comment;
     private String rate;
 }

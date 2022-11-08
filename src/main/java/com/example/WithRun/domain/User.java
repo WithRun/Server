@@ -75,6 +75,7 @@ public class User {
     private int userLongitude;
 
     private String token;
+    private double avgRating;
 
     private int level;
 
@@ -100,6 +101,39 @@ public class User {
         if(userRating.getRatedUser() != this)
             userRating.setRatedUser(this);
 //        targetUser.getRatedUserList().add(userRating);
+    }
+
+    public double MyAvgRating(){
+        double AvgRating =0;
+        int count =0;
+        if(this.ratedUserList.size()==0)
+            return 0;
+        for(UserRating myrating : this.ratedUserList){
+            AvgRating += myrating.getRating();
+            count++;
+        }
+        AvgRating /= count;
+        return AvgRating;
+    }
+
+    public int countMyRatedList(){
+        int count = 0;
+
+        if(this.ratedUserList.size()==0)
+            return 0;
+        for(UserRating myrating : this.ratedUserList){
+            count++;
+        }
+        return count;
+    }
+
+    public void setMyLevel(){
+        double myRatingScore = MyAvgRating();
+        int myRatedList = countMyRatedList();
+        if(myRatingScore >= 4.0){
+            this.level = myRatedList/10;
+        }
+        this.avgRating = myRatingScore;
     }
 
 }

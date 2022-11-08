@@ -33,26 +33,23 @@ public class UserController {
         User user = userService.getUserById(id);
 
         return ResponseEntity.ok().body(user);
-
     }
 
 
     @PostMapping("/mypage/upload/image/{id}")
     public ResponseEntity<?> uploadProfileImage(@PathVariable("id") @AuthenticationPrincipal String id,
                                                 @RequestPart MultipartFile image) throws IOException {
-        //서비스
         String StringId = id;
         User user = userService.getUserById(id);
 
         String path = imageService.upload(image,StringId);
-        // userId에 맞는 엔티티 불러오기 , 엔티티의 user image 불러오기 , 값넣기 , 저장하기 , DTO 형태로 리턴하기
 
         return ResponseEntity.ok().body("path :" + path);
     }
 
     @PutMapping("/mypage/{id}")
     public ResponseEntity<?> changeMyName(@PathVariable("id") @AuthenticationPrincipal String id,
-                                          @RequestParam String newName){
+                                          @RequestHeader String newName){
         User user = userService.getUserById(id);
         user = userService.changeUsername(user, newName);
         return ResponseEntity.ok().body(user);
@@ -61,7 +58,7 @@ public class UserController {
 
     @DeleteMapping("/mypage/delete/image/{id}")
     public ResponseEntity<?> deleteProfileImage(@PathVariable("id") @AuthenticationPrincipal String id,
-                                                @RequestParam String filename){
+                                                @RequestHeader String filename){
         imageService.delete(filename, id);
         return ResponseEntity.ok().body("deleted successfully");
     }
@@ -77,17 +74,17 @@ public class UserController {
     }
 
     @PostMapping("/userpage/follow")
-    public ResponseEntity<?> followUser(@RequestParam String targetId,
+    public ResponseEntity<?> followUser(@RequestHeader String targetId,
                                         @AuthenticationPrincipal String id){
         userService.followUser(id,targetId);
-        return ResponseEntity.ok().body("follow successed.");
+        return ResponseEntity.ok().body("follow succeed.");
     }
 
     @DeleteMapping("/userpage/unfollow")
-    public ResponseEntity<?> unfollowUser(@RequestParam String targetId,
+    public ResponseEntity<?> unfollowUser(@RequestHeader String targetId,
                                           @AuthenticationPrincipal String id){
         userService.unfollowUser(id, targetId);
-        return ResponseEntity.ok().body("unfollow successed.");
+        return ResponseEntity.ok().body("unfollow succeed.");
     }
 
     @PostMapping("/userpage/rating")
@@ -96,6 +93,14 @@ public class UserController {
         User user = userService.getUserById(id);
         UserRating userRating = userService.rateUser(id, ratingDTO);
         return ResponseEntity.ok().body(userRating);
+    }
+
+    @GetMapping("/userpage/{targetId}")
+    public ResponseEntity<?> getUserPage(@AuthenticationPrincipal String id,
+                                         @PathVariable String targetId){
+        User targetUser = userService.getUserById(targetId);
+
+        return ResponseEntity.ok().body(targetUser);
     }
 
 

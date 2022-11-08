@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -46,10 +47,10 @@ public class UserRating {
         }
     }
 
-    public void duplicateRating(User user) throws Exception {
-        if (this.getRatingUserId() == user.getId()){
-            throw new Exception("duplicate comment by one user");
+    public Boolean duplicateRating(User user){
+        if (Objects.equals(this.getRatingUserId(), user.getId())){
+            return true;
         }
-
+        else return false;
     }
 }

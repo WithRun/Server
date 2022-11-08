@@ -29,12 +29,12 @@ public class WebSecurityConfig {
         http.cors().and().csrf().disable();
                 http.httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("/","/auth/**").permitAll()
-                .antMatchers("/user").hasRole("USER")
+                .antMatchers("/","/auth/**", "/email/**").permitAll()
+//                .antMatchers("/user").hasRole("ROLE_USER")
                 .anyRequest().authenticated()
 //                .anyRequest().permitAll()
                 .and()
-                .oauth2Login().defaultSuccessUrl("/success").userInfoEndpoint()
+                .oauth2Login().defaultSuccessUrl("/").userInfoEndpoint()
                 .userService(principalOauth2UserService);
         // 로그인 하면 토큰이 아닌 액세스토큰+사용자 프로필정보 받음
         // 그 정보는 PrincipalOauth2userservice에가서 파라미터인
