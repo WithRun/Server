@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserImageRepository extends JpaRepository<UserImage,Long> {
+
+    UserImage findByName(String filename);
 }

@@ -10,12 +10,11 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
+@Data
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "json_id")
 public class UserRating {
 
     @Id

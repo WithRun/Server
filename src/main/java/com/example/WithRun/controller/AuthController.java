@@ -60,7 +60,7 @@ public class AuthController {
             return ResponseEntity.ok().body(responseDTO);
         }
         else{
-            CommonResponseDTO responseDTO = CommonResponseDTO.builder().message("이미 존재하는 닉네임입니다.").build();
+            CommonResponseDTO responseDTO = CommonResponseDTO.builder().message("이미 존재하는 이메일입니다.").build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
@@ -68,7 +68,8 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> createUser(@RequestBody SignUpDTO signUpDTO){
         User user = authService.createUser(signUpDTO);
-        return ResponseEntity.ok().body(user);
+//        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(signUpDTO);
     }
 
     @PostMapping("/signin")
@@ -76,7 +77,10 @@ public class AuthController {
         User getUserInRepo = userService.getUserInRepo(signInDTO);
         if(getUserInRepo.getRole() != null){
             String token = authService.createToken(getUserInRepo);
-            return ResponseEntity.ok().body(getUserInRepo);
+            signInDTO.setToken(token);
+            signInDTO.setLoginChecked(true);
+//            return ResponseEntity.ok().body(getUserInRepo);
+            return ResponseEntity.ok().body(signInDTO);
         }
         else return ResponseEntity.badRequest().body("WRONG PASSWORD.");
     }
