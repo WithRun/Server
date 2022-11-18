@@ -12,4 +12,5 @@ public class SignInDTO {
     private String userId;
     private String password;
     private String token;
+    private Boolean loginChecked;
 }

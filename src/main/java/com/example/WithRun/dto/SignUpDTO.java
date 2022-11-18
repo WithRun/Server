@@ -17,6 +17,5 @@ public class SignUpDTO {
     @NotNull
     private String username;
     private Gender gender;
-    @NotNull
     private String email;
 }

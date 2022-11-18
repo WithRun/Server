@@ -11,17 +11,22 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.WithRun.domain.User;
+import com.example.WithRun.dto.ImageDTO;
 import com.example.WithRun.repository.UserRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @NoArgsConstructor
@@ -53,26 +58,40 @@ public class ImageService {
                 .withRegion(this.region).build();
     }
 
-    public String upload(MultipartFile file, String userId)throws IOException{
-        String filename = file.getOriginalFilename();
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(file.getSize());
-        objectMetadata.setContentType(file.getContentType());
-        InputStream inputStream= file.getInputStream();
-        String filepath = userId+ "/" + filename;
+    public List<ImageDTO> upload(List<MultipartFile> files, String userId)throws IOException{
+        List<ImageDTO> imageDTOList = new ArrayList<>();
 
-        s3Client.putObject(new PutObjectRequest(bucket,filepath,inputStream,objectMetadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
+        files.forEach(file -> {
+            String fileName = file.getOriginalFilename();
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(file.getSize());
+            objectMetadata.setContentType(file.getContentType());
+            try(InputStream inputStream= file.getInputStream()){
+                String filepath = userId+ "/" + fileName;
+                s3Client.putObject(new PutObjectRequest(bucket,filepath,inputStream,objectMetadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
 
-        User user = userRepository.findByUserID(userId);
+//                s3Client.getUrl(bucket,filepath).toString();
+//                fileNameList.add(s3Client.getUrl(bucket,filepath).toString());
+                ImageDTO imageDTO = ImageDTO.builder()
+                        .filename(fileName)
+                        .url(s3Client.getUrl(bucket,filepath).toString()).build();
+                imageDTOList.add(imageDTO);
+            }catch (IOException e){
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Upload failed");
+            }
+        });
 
-        return s3Client.getUrl(bucket,filepath).toString();
+        return imageDTOList;
     }
 
-    public void delete(String filename, String userId){
-        bucket +="/" + userId;
-        s3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
-
+    public void delete(List<String> filenameList, String userId){
+        for(String filename : filenameList) {
+            bucket = "withrun";
+            bucket += "/" + userId;
+            s3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
+        }
+        bucket = "withrun";
     }
 
     public String getFilePath(MultipartFile file, String userId){

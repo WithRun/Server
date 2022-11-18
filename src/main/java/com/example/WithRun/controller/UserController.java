@@ -2,7 +2,9 @@ package com.example.WithRun.controller;
 
 
 import com.example.WithRun.domain.User;
+import com.example.WithRun.domain.UserImage;
 import com.example.WithRun.domain.UserRating;
+import com.example.WithRun.dto.ImageDTO;
 import com.example.WithRun.dto.RatingDTO;
 import com.example.WithRun.service.AuthService;
 import com.example.WithRun.service.ImageService;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -32,20 +35,10 @@ public class UserController {
     public ResponseEntity<?> getMyPage(@AuthenticationPrincipal String id){
         User user = userService.getUserById(id);
 
+//        return ResponseEntity.ok().body(user);
         return ResponseEntity.ok().body(user);
     }
 
-
-    @PostMapping("/mypage/upload/image/{id}")
-    public ResponseEntity<?> uploadProfileImage(@PathVariable("id") @AuthenticationPrincipal String id,
-                                                @RequestPart MultipartFile image) throws IOException {
-        String StringId = id;
-        User user = userService.getUserById(id);
-
-        String path = imageService.upload(image,StringId);
-
-        return ResponseEntity.ok().body("path :" + path);
-    }
 
     @PutMapping("/mypage/{id}")
     public ResponseEntity<?> changeMyName(@PathVariable("id") @AuthenticationPrincipal String id,
@@ -55,22 +48,36 @@ public class UserController {
         return ResponseEntity.ok().body(user);
     }
 
+    @PostMapping("/mypage/upload/image/{id}")
+    public ResponseEntity<?> uploadProfileImage(@PathVariable("id") @AuthenticationPrincipal String id,
+                                                @RequestPart List<MultipartFile> images) throws IOException {
+        User user = userService.getUserById(id);
+        List<ImageDTO> imageDTOList = imageService.upload(images, id);
+        UserImage userImage = userService.saveUserImage(imageDTOList,user);
+
+        return ResponseEntity.ok().body(userImage);
+    }
 
     @DeleteMapping("/mypage/delete/image/{id}")
     public ResponseEntity<?> deleteProfileImage(@PathVariable("id") @AuthenticationPrincipal String id,
-                                                @RequestHeader String filename){
-        imageService.delete(filename, id);
+                                                @RequestBody List<String> filenames){
+        imageService.delete(filenames, id);
+        User user = userService.getUserById(id);
+        for(String filename : filenames){
+            userService.deleteUserImage(filename,user);
+        }
+
         return ResponseEntity.ok().body("deleted successfully");
     }
 
     @GetMapping("/mypage/following")
     public ResponseEntity<?> getFollowingList(@AuthenticationPrincipal String id){
-        return ResponseEntity.ok().body(userService.getUserById(id).getFollowingList());
+        return ResponseEntity.ok().body(userService.getFollowingUserListById(id));
     }
 
     @GetMapping("/mypage/follower")
     public ResponseEntity<?> getFollowerList(@AuthenticationPrincipal String id){
-        return ResponseEntity.ok().body(userService.getUserById(id).getFollowerList());
+        return ResponseEntity.ok().body(userService.getFollowerUserListById(id));
     }
 
     @PostMapping("/userpage/follow")
@@ -92,15 +99,16 @@ public class UserController {
                                         @RequestBody RatingDTO ratingDTO) throws Exception {
         User user = userService.getUserById(id);
         UserRating userRating = userService.rateUser(id, ratingDTO);
-        return ResponseEntity.ok().body(userRating);
+        return ResponseEntity.ok().body(ratingDTO);
     }
 
     @GetMapping("/userpage/{targetId}")
     public ResponseEntity<?> getUserPage(@AuthenticationPrincipal String id,
-                                         @PathVariable String targetId){
+                                         @RequestHeader @PathVariable String targetId){
         User targetUser = userService.getUserById(targetId);
 
         return ResponseEntity.ok().body(targetUser);
+//        return ResponseEntity.ok().body("success");
     }
 
 
