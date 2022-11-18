@@ -29,10 +29,30 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-	compileOnly 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+task('release'){
+	dependsOn("build")
+	doLast {
+		def stdout = new ByteArrayOutputStream()
+		exec{
+			commandLine 'eb', 'setenv', 'SPRING_PROFILES_ACTIVE=prod'
+			standardOutput = stdout
+		}
+
+		println "eb setenv SPRING_PROFILES_ACTIVE=prod :\n$stdout";
+		exec {
+			commandLine 'eb', 'deploy'
+			standardOutput = stdout
+		}
+		println "eb deploy:\n$stdout";
+		println "Release succeed."
+	}
 }

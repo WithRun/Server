@@ -7,9 +7,11 @@ import com.example.WithRun.config.auth.PrincipalDetails;
 import com.example.WithRun.domain.User;
 import com.example.WithRun.repository.UserRepository;
 import com.example.WithRun.security.TokenProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
+public class PrincipalOauth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     @Autowired
     UserRepository userRepository;
@@ -26,12 +28,12 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     TokenProvider tokenProvider;
 
     @Override
-    @SuppressWarnings("unchecked")
+//    @SuppressWarnings("unchecked")
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         System.out.println("getAttributes : " + userRequest.getClientRegistration());
-
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+        OAuth2UserService<OAuth2UserRequest,OAuth2User> delegate = new DefaultOAuth2UserService();
+        OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
         OAuth2UserInfo oAuth2UserInfo=null;
         if(userRequest.getClientRegistration().getRegistrationId().equals("google")){
@@ -39,7 +41,9 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
             oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
         } else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
             System.out.println("naver login request");
-            oAuth2UserInfo = new NaverUserInfo((Map)oAuth2User.getAttributes().get("response"));
+            ObjectMapper objectMapper = new ObjectMapper();
+            //noinspection unchecked
+            oAuth2UserInfo = new NaverUserInfo(objectMapper.convertValue(oAuth2User.getAttributes().get("response"),Map.class));
         }else System.out.println("Invalid login request");
 
         String provider = oAuth2UserInfo.getProvider();
