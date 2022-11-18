@@ -2,9 +2,13 @@ package com.example.WithRun.service;
 
 
 import com.example.WithRun.domain.User;
+import com.example.WithRun.domain.UserImage;
 import com.example.WithRun.domain.UserRating;
+import com.example.WithRun.dto.ImageDTO;
 import com.example.WithRun.dto.RatingDTO;
 import com.example.WithRun.dto.SignInDTO;
+import com.example.WithRun.dto.UserDTO;
+import com.example.WithRun.repository.UserImageRepository;
 import com.example.WithRun.repository.UserRatingRepository;
 import com.example.WithRun.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -23,6 +30,9 @@ public class UserService {
 
     @Autowired
     UserRatingRepository userRatingRepository;
+
+    @Autowired
+    UserImageRepository userImageRepository;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -51,6 +61,10 @@ public class UserService {
         else return new User();
     }
 
+    public User getUserByUsername(String username){
+        return userRepository.findByUsername(username);
+    }
+
     public User getUserById(String userId){
         return userRepository.findById(Long.parseLong(userId)).orElseThrow(); //NoSuchElementException
     }
@@ -58,7 +72,8 @@ public class UserService {
     public void followUser(String userId, String targetId){
         User user = getUserById(userId);
         User targetUser = getUserById(targetId);
-        user.addFollowingList(targetUser);
+        if(!targetUser.getFollowerList().contains(Long.parseLong(userId)) && !user.equals(targetUser))
+            user.addFollowingList(targetUser);
         userRepository.save(user);
     }
 
@@ -73,7 +88,7 @@ public class UserService {
         User targetUser = getUserById(ratingDTO.getTargetId());
         User user = getUserById(userId);
         for(UserRating userRating : targetUser.getRatedUserList()) {
-            if(userRating.duplicateRating(user)){
+            if(userRating.duplicateRating(user) && user.equals(targetUser)){
                 return null;
             }
         }
@@ -89,6 +104,49 @@ public class UserService {
         userRepository.save(targetUser);
         return userRating;
     }
+
+    public List<UserDTO> getFollowingUserListById(String userId){
+        List<UserDTO> FollowingList = new ArrayList<>();
+        List<Long> userFollowingList = getUserById(userId).getFollowingList();
+        for(Long followingId : userFollowingList){
+            UserDTO userDTO = UserDTO.fromEntity(getUserById(Long.toString(followingId)));
+            FollowingList.add(userDTO);
+        }
+        return FollowingList;
+    }
+
+    public List<UserDTO> getFollowerUserListById(String userId){
+        List<UserDTO> FollowerList = new ArrayList<>();
+        List<Long> userFollowerList = getUserById(userId).getFollowerList();
+        for(Long followerId : userFollowerList){
+            UserDTO userDTO = UserDTO.fromEntity(getUserById(Long.toString(followerId)));
+            FollowerList.add(userDTO);
+        }
+        return FollowerList;
+    }
+
+    public UserImage saveUserImage(List<ImageDTO> imageDTOList, User user){
+        UserImage userImage = new UserImage();
+        for(ImageDTO imageDTO : imageDTOList){
+            userImage.setUrl(imageDTO.getUrl());
+            userImage.setName(user.getId()+"_"+imageDTO.getFilename());
+        }
+        user.addUserImage(userImage);
+        userImageRepository.save(userImage);
+        userRepository.save(user);
+
+        return userImage;
+    }
+
+    public void deleteUserImage(String filename, User user){
+        UserImage userImage = userImageRepository.findByName(user.getId()+"_"+filename);
+        userImageRepository.delete(userImage);
+
+        user.setMyImage(null);
+        userRepository.save(user);
+    }
+
+
 
     public Boolean isExistByUserId(String userId) {
         return userRepository.existsByUserID(userId);

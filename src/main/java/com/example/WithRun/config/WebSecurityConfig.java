@@ -31,8 +31,8 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/","/auth/**", "/email/**").permitAll()
 //                .antMatchers("/user").hasRole("ROLE_USER")
-                .anyRequest().authenticated()
-//                .anyRequest().permitAll()
+//                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .oauth2Login().defaultSuccessUrl("/").userInfoEndpoint()
                 .userService(principalOauth2UserService);

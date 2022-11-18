@@ -10,13 +10,13 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+
+@Data
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "json_id")
 public class User {
 
     @Id
@@ -58,7 +58,7 @@ public class User {
     @OneToMany(mappedBy = "recruitMemberUser")
     private List<RecruitMember> recruitMemberList = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_image_id")
     private UserImage myImage;
 
@@ -80,7 +80,7 @@ public class User {
     private int level;
 
 
-    // ==============================//
+    // ==========================================//
     public void addFollowingList(User followUser){
         getFollowingList().add(followUser.id);
         followUser.getFollowerList().add(this.id);
@@ -103,6 +103,18 @@ public class User {
 //        targetUser.getRatedUserList().add(userRating);
     }
 
+    public void addUserImage(UserImage userImage){
+        this.myImage = userImage;
+        userImage.setUser(this);
+    }
+
+    public void addCrewInfo(CrewInfo crewInfo){
+        this.myCrewInfoList.add(crewInfo);
+        crewInfo.setCrewInfoUser(this);
+    }
+
+
+    //==============================================//
     public double MyAvgRating(){
         double AvgRating =0;
         int count =0;
