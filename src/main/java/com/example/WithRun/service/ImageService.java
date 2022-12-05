@@ -85,12 +85,44 @@ public class ImageService {
         return imageDTOList;
     }
 
+    public ImageDTO uploadFreePostImage(MultipartFile file, String userId)throws IOException{
+
+        String fileName = file.getOriginalFilename();
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+        try(InputStream inputStream= file.getInputStream()){
+            String filepath = userId+ "/" + fileName;
+            s3Client.putObject(new PutObjectRequest(bucket,filepath,inputStream,objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+
+//                s3Client.getUrl(bucket,filepath).toString();
+//                fileNameList.add(s3Client.getUrl(bucket,filepath).toString());
+            return ImageDTO.builder()
+                    .filename(fileName)
+                    .url(s3Client.getUrl(bucket,filepath).toString()).build();
+        }catch (IOException e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Upload failed");
+        }
+    }
+
+
+
+
     public void delete(List<String> filenameList, String userId){
         for(String filename : filenameList) {
             bucket = "withrun";
             bucket += "/" + userId;
             s3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
         }
+        bucket = "withrun";
+    }
+
+
+    public void deleteFreePostImage(String filename, String userId, String localOrServer){
+        bucket = "withrun";
+        bucket +=  "/" + localOrServer + "/" + userId;
+        s3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
         bucket = "withrun";
     }
 

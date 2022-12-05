@@ -38,3 +38,8 @@ out/
 
 src/main/resources/email.properties
 src/main/resources/application-oauth.properties
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

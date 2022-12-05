@@ -1,5 +1,6 @@
 package com.example.WithRun.domain;
 
+import com.example.WithRun.dto.FreePostCommentDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 public class FreePostComment {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "freepost_comment_id")
     private Long id;
 
@@ -23,9 +24,16 @@ public class FreePostComment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "freepost_id")
-    private FreePost freePostFromComment;
+    private FreePost freePostCommentFreePost;
 
     private String content;
     private LocalDateTime created_at;
+
+    public FreePostCommentDTO toDto(){
+
+        return FreePostCommentDTO.builder()
+                .id(id).author(this.getFreePostCommentUser().getUsername())
+                .content(content).created_at(created_at).build();
+    }
 
 }
