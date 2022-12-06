@@ -1,6 +1,7 @@
-package com.example.WithRun.domain;
+package com.example.WithRun.freepost.domain;
 
-import com.example.WithRun.dto.FreePostDTO;
+import com.example.WithRun.freepost.dto.FreePostDTO;
+import com.example.WithRun.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -50,4 +52,8 @@ public class FreePost {
     }
 
 
+    public void addFreePostImage(FreePostImage freePostImage) {
+        freePostImage.setFreePostImageFreePost(this);
+        this.setFreePostImage(freePostImage);
+    }
 }

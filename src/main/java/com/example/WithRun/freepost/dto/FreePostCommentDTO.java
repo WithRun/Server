@@ -1,4 +1,4 @@
-package com.example.WithRun.dto;
+package com.example.WithRun.freepost.dto;
 
 
 import lombok.*;

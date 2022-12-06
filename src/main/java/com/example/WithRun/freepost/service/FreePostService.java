@@ -1,15 +1,20 @@
-package com.example.WithRun.service;
+package com.example.WithRun.freepost.service;
 
 
-import com.example.WithRun.domain.FreePost;
-import com.example.WithRun.domain.FreePostComment;
-import com.example.WithRun.domain.FreePostImage;
-import com.example.WithRun.domain.User;
-import com.example.WithRun.dto.*;
-import com.example.WithRun.repository.FreePostCommentRepository;
-import com.example.WithRun.repository.FreePostImageRepository;
-import com.example.WithRun.repository.FreePostRepository;
-import com.example.WithRun.repository.UserRepository;
+import com.example.WithRun.common.dto.ImageDTO;
+import com.example.WithRun.common.dto.PostingDTO;
+import com.example.WithRun.freepost.domain.FreePost;
+import com.example.WithRun.freepost.domain.FreePostComment;
+import com.example.WithRun.freepost.domain.FreePostImage;
+import com.example.WithRun.freepost.dto.FreePostCommentDTO;
+import com.example.WithRun.freepost.dto.FreePostDTO;
+import com.example.WithRun.freepost.dto.FreePostImageDTO;
+import com.example.WithRun.common.service.ImageService;
+import com.example.WithRun.user.domain.User;
+import com.example.WithRun.freepost.repository.FreePostCommentRepository;
+import com.example.WithRun.freepost.repository.FreePostImageRepository;
+import com.example.WithRun.freepost.repository.FreePostRepository;
+import com.example.WithRun.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,24 +76,24 @@ public class FreePostService {
         return convertToFreePostDTO(freePostList);
     }
 
-    public FreePostDTO createFreePost(User user, MultipartFile imageFile, PostingDTO postingDTO) throws IOException {
+    public FreePostDTO createFreePost(User user, MultipartFile imageFile, PostingDTO postingDTO, String localOrServer) throws IOException {
 
-        ImageDTO imageDTO = imageService.uploadFreePostImage(imageFile, user.getId().toString());
-
-        FreePostImage freePostImage = FreePostImage.builder()
-                .name(imageDTO.getFilename()).url(imageDTO.getUrl())
-                .build();
-
-        freePostImageRepository.save(freePostImage);
+        FreePostImage freePostImage = imageService.uploadFreePostImage(imageFile, user.getId().toString(),localOrServer);
 
         FreePost freePost = FreePost.builder().freePostUser(user).author(user.getUsername())
                 .title(postingDTO.getTitle()).content(postingDTO.getContent())
-                .freePostImage(freePostImage)
                 .build();
+        freePost.addFreePostImage(freePostImage);
 
         freePostRepository.save(freePost);
+        freePostImageRepository.save(freePostImage);
 
-        return freePost.toDTO();
+
+        FreePostImageDTO freePostImageDTO = freePostImage.toDto();
+        FreePostDTO freePostDTO = freePost.toDTO();
+        freePostDTO.setFreePostImageDTO(freePostImageDTO);
+
+        return freePostDTO;
     }
 
 

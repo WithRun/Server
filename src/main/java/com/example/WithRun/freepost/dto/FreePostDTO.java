@@ -1,6 +1,5 @@
-package com.example.WithRun.dto;
+package com.example.WithRun.freepost.dto;
 
-import com.example.WithRun.domain.FreePostComment;
 import lombok.*;
 
 import java.time.LocalDateTime;

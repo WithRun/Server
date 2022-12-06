@@ -1,14 +1,14 @@
-package com.example.WithRun.controller;
+package com.example.WithRun.freepost.controller;
 
-import com.example.WithRun.domain.FreePost;
-import com.example.WithRun.domain.FreePostComment;
-import com.example.WithRun.domain.User;
-import com.example.WithRun.dto.FreePostCommentDTO;
-import com.example.WithRun.dto.FreePostDTO;
-import com.example.WithRun.dto.PostingDTO;
-import com.example.WithRun.service.FreePostService;
-import com.example.WithRun.service.ImageService;
-import com.example.WithRun.service.UserService;
+import com.example.WithRun.freepost.domain.FreePost;
+import com.example.WithRun.freepost.domain.FreePostComment;
+import com.example.WithRun.user.domain.User;
+import com.example.WithRun.freepost.dto.FreePostCommentDTO;
+import com.example.WithRun.freepost.dto.FreePostDTO;
+import com.example.WithRun.common.dto.PostingDTO;
+import com.example.WithRun.freepost.service.FreePostService;
+import com.example.WithRun.common.service.ImageService;
+import com.example.WithRun.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -49,7 +48,7 @@ public class FreePostController {
 
         User user = userService.getUserById(id);
 
-        FreePostDTO freePostDTO = freePostService.createFreePost(user,image,postingDTO);
+        FreePostDTO freePostDTO = freePostService.createFreePost(user,image,postingDTO, "Server");
 
         return ResponseEntity.ok().body(freePostDTO);
 
@@ -63,7 +62,7 @@ public class FreePostController {
         User user = userService.getUserById(id);
         FreePost freePost = freePostService.getFreePost(freepost_id);
 
-        return ResponseEntity.ok().body(freePostService.deleteFreePost(user,freePost,"Local"));
+        return ResponseEntity.ok().body(freePostService.deleteFreePost(user,freePost,"Server"));
     }
 
     @PostMapping("/{freepost_id}/comment")

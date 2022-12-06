@@ -1,6 +1,6 @@
-package com.example.WithRun.domain;
+package com.example.WithRun.freepost.domain;
 
-import com.example.WithRun.dto.FreePostImageDTO;
+import com.example.WithRun.freepost.dto.FreePostImageDTO;
 import lombok.*;
 
 import javax.persistence.*;

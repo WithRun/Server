@@ -1,6 +1,7 @@
-package com.example.WithRun.domain;
+package com.example.WithRun.freepost.domain;
 
-import com.example.WithRun.dto.FreePostCommentDTO;
+import com.example.WithRun.freepost.dto.FreePostCommentDTO;
+import com.example.WithRun.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
