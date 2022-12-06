@@ -1,16 +1,18 @@
-package com.example.WithRun.service;
+package com.example.WithRun.crewinfo.service;
 
 
-import com.example.WithRun.domain.CrewInfo;
-import com.example.WithRun.domain.CrewInfoComment;
-import com.example.WithRun.domain.CrewInfoImage;
-import com.example.WithRun.domain.User;
-import com.example.WithRun.dto.CrewInfoDTO;
-import com.example.WithRun.dto.ImageDTO;
-import com.example.WithRun.repository.CrewInfoCommentRepository;
-import com.example.WithRun.repository.CrewInfoImageRepository;
-import com.example.WithRun.repository.CrewInfoRepository;
-import com.example.WithRun.repository.UserRepository;
+import com.example.WithRun.crewinfo.domain.CrewInfo;
+import com.example.WithRun.crewinfo.domain.CrewInfoComment;
+import com.example.WithRun.crewinfo.domain.CrewInfoImage;
+import com.example.WithRun.common.service.ImageService;
+import com.example.WithRun.user.domain.User;
+import com.example.WithRun.crewinfo.dto.CrewInfoDTO;
+import com.example.WithRun.common.dto.ImageDTO;
+import com.example.WithRun.crewinfo.repository.CrewInfoCommentRepository;
+import com.example.WithRun.crewinfo.repository.CrewInfoImageRepository;
+import com.example.WithRun.crewinfo.repository.CrewInfoRepository;
+import com.example.WithRun.user.repository.UserRepository;
+import com.example.WithRun.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,8 +44,12 @@ public class CrewInfoService {
     ImageService imageService;
 
 
-    public List<CrewInfo> getAllPosts(){
-        return crewInfoRepository.findAll();
+    public List<CrewInfoDTO> getAllPosts(){
+        List<CrewInfo> crewInfoList = crewInfoRepository.findAll();
+        List<CrewInfoDTO> crewInfoDTOList = new ArrayList<>();
+        for(CrewInfo crewInfo : crewInfoList)
+            crewInfoDTOList.add(crewInfo.toDto());
+        return crewInfoDTOList;
     }
 
     public CrewInfo getCrewInfo(String crewInfoId){
@@ -61,6 +67,13 @@ public class CrewInfoService {
         return crewInfoDTO;
     }
 
+    public CrewInfoDTO savePostWithoutImages(String id, CrewInfoDTO crewInfoDTO){
+        User user = userService.getUserById(id);
+        CrewInfo crewInfo = CrewInfoDTO.toEntity(crewInfoDTO);
+        setDTOtoCrewInfoWithoutImages(crewInfo,crewInfoDTO,user);
+        return crewInfoDTO;
+    }
+
 
     public CrewInfoDTO updatePost(String id, String post_id, CrewInfoDTO crewInfoDTO, List<ImageDTO> imageDTOList){
         User user = userService.getUserById(id);
@@ -71,6 +84,17 @@ public class CrewInfoService {
         crewInfo.deleteCrewInfoImageList();
 
         setDTOtoCrewInfo(crewInfo,crewInfoDTO,imageDTOList,user);
+        return crewInfoDTO;
+    }
+    public CrewInfoDTO updatePostWithoutImages(String id, String post_id, CrewInfoDTO crewInfoDTO){
+        User user = userService.getUserById(id);
+        CrewInfo crewInfo = getCrewInfo(post_id);
+
+//        deleteCrewInfoImage(id, crewInfo.getCrewInfoImageList()); //s3
+//        crewInfoImageRepository.deleteAll(crewInfo.getCrewInfoImageList()); //repo
+//        crewInfo.deleteCrewInfoImageList();
+
+        setDTOtoCrewInfoWithoutImages(crewInfo,crewInfoDTO,user);
         return crewInfoDTO;
     }
 
@@ -86,7 +110,7 @@ public class CrewInfoService {
     } // domain에서?
 
 
-    public List<CrewInfo> searchPost(String keyword){
+    public List<CrewInfoDTO> searchPost(String keyword){
 //        List<CrewInfo> crewInfoList = crewInfoRepository.findAll();
         List<CrewInfo> crewInfoList = crewInfoRepository.findByTitleContainingIgnoreCase(keyword);
 //        List<CrewInfo> includeKeywordList = new ArrayList<>();
@@ -95,11 +119,17 @@ public class CrewInfoService {
 //                includeKeywordList.add(crewInfo);
 //            }
 //        }
-        return crewInfoList;
+        List<CrewInfoDTO> crewInfoDTOList = new ArrayList<>();
+        for(CrewInfo crewInfo : crewInfoList){
+            crewInfoDTOList.add(crewInfo.toDto());
+        }
+        return crewInfoDTOList;
     }
 
     public List<CrewInfoImage> createCrewInfoImages(List<ImageDTO> imageDTOList,CrewInfo crewInfo){
         List<CrewInfoImage> list = new ArrayList<>();
+        if(imageDTOList.isEmpty())
+            return list;
         for(ImageDTO imageDTO : imageDTOList){
             CrewInfoImage crewInfoImage = CrewInfoImage.builder()
                     .url(imageDTO.getUrl())
@@ -124,9 +154,20 @@ public class CrewInfoService {
 
         List<CrewInfoImage> crewInfoImageList = createCrewInfoImages(imageDTOList, crewInfo);
 
+
         for(CrewInfoImage crewInfoImage : crewInfoImageList){
             crewInfo.addCrewInfoImageList(crewInfoImage);
         }
+        crewInfo.setTitle(crewInfoDTO.getTitle());
+        crewInfo.setAuthor(user.getUsername());
+        crewInfo.setContent(crewInfoDTO.getContent());
+        user.addCrewInfo(crewInfo);
+
+        crewInfoRepository.save(crewInfo);
+        userRepository.save(user);
+    }
+    public void setDTOtoCrewInfoWithoutImages(CrewInfo crewInfo, CrewInfoDTO crewInfoDTO, User user){
+
         crewInfo.setTitle(crewInfoDTO.getTitle());
         crewInfo.setAuthor(user.getUsername());
         crewInfo.setContent(crewInfoDTO.getContent());

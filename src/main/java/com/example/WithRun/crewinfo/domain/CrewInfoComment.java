@@ -1,6 +1,7 @@
-package com.example.WithRun.domain;
+package com.example.WithRun.crewinfo.domain;
 
 
+import com.example.WithRun.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 public class CrewInfoComment {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "crewinfo_comment_id")
     private Long id;
 

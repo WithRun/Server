@@ -1,4 +1,4 @@
-package com.example.WithRun.domain;
+package com.example.WithRun.crewinfo.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class CrewInfoImage {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "crewinfo_image_id")
     private Long id;
 

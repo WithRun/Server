@@ -1,6 +1,6 @@
-package com.example.WithRun.repository;
+package com.example.WithRun.crewinfo.repository;
 
-import com.example.WithRun.domain.CrewInfoImage;
+import com.example.WithRun.crewinfo.domain.CrewInfoImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

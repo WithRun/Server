@@ -1,46 +1,45 @@
-package com.example.WithRun.domain;
+package com.example.WithRun.crewinfo.domain;
 
-import com.example.WithRun.controller.CrewInfoController;
+import com.example.WithRun.common.domain.BaseTimeDomain;
+import com.example.WithRun.crewinfo.dto.CrewInfoDTO;
+import com.example.WithRun.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
-import net.bytebuddy.matcher.FilterableList;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "json_id")
-public class CrewInfo extends BaseTimeDomain{
+public class CrewInfo extends BaseTimeDomain {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "crewinfo_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User crewInfoUser;
 
     @OneToMany(mappedBy = "crewInfoFromComment")
-    @Builder.Default
     private List<CrewInfoComment> crewInfoCommentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "crewInfoFromImage")
-    @Builder.Default
     private List<CrewInfoImage> crewInfoImageList = new ArrayList<>();
 
     private String title;
     private String author;
     private String content;
+    private String latitude;
+    private String longitude;
 
     //================================================//
 
@@ -58,6 +57,16 @@ public class CrewInfo extends BaseTimeDomain{
     public void addCrewInfoCommentList(CrewInfoComment crewInfoComment){
         crewInfoCommentList.add(crewInfoComment);
         crewInfoComment.setCrewInfoFromComment(this);
+    }
+
+
+    public CrewInfoDTO toDto(){
+        return CrewInfoDTO.builder()
+                .id(id).title(title)
+                .author(author)
+                .content(content)
+                .latitude(latitude)
+                .longitude(longitude).build();
     }
 
 }

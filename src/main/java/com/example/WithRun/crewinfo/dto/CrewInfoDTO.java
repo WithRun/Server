@@ -1,17 +1,10 @@
-package com.example.WithRun.dto;
+package com.example.WithRun.crewinfo.dto;
 
-import com.example.WithRun.domain.CrewInfo;
-import com.example.WithRun.domain.CrewInfoComment;
-import com.example.WithRun.domain.CrewInfoImage;
-import com.example.WithRun.domain.User;
+import com.example.WithRun.crewinfo.domain.CrewInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Builder
@@ -22,11 +15,14 @@ public class CrewInfoDTO {
     private Long id;
     private String title;
     private String content;
-
+    private String author;
+    private String latitude;
+    private String longitude;
 
     public static CrewInfo toEntity(CrewInfoDTO dto){
         return CrewInfo.builder()
-                .title(dto.title).content(dto.content)
+                .title(dto.title).content(dto.content).author(dto.author)
+                .latitude(dto.latitude).longitude(dto.longitude)
                 .build();
     }
 
