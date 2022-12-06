@@ -1,20 +1,15 @@
-package com.example.WithRun.controller;
+package com.example.WithRun.auth.controller;
 
-import com.example.WithRun.domain.User;
-import com.example.WithRun.dto.CommonResponseDTO;
-import com.example.WithRun.dto.SignInDTO;
-import com.example.WithRun.dto.SignUpDTO;
-import com.example.WithRun.service.AuthService;
-import com.example.WithRun.service.EmailService;
-import com.example.WithRun.service.UserService;
+import com.example.WithRun.user.domain.User;
+import com.example.WithRun.common.dto.CommonResponseDTO;
+import com.example.WithRun.auth.dto.SignInDTO;
+import com.example.WithRun.auth.dto.SignUpDTO;
+import com.example.WithRun.auth.service.AuthService;
+import com.example.WithRun.auth.service.EmailService;
+import com.example.WithRun.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @RestController
 @RequestMapping("auth")
@@ -78,6 +73,7 @@ public class AuthController {
         if(getUserInRepo.getRole() != null){
             String token = authService.createToken(getUserInRepo);
             signInDTO.setToken(token);
+            signInDTO.setUsername(getUserInRepo.getUsername());
             signInDTO.setLoginChecked(true);
 //            return ResponseEntity.ok().body(getUserInRepo);
             return ResponseEntity.ok().body(signInDTO);

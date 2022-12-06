@@ -1,7 +1,7 @@
-package com.example.WithRun.controller;
+package com.example.WithRun.auth.controller;
 
-import com.example.WithRun.dto.CommonResponseDTO;
-import com.example.WithRun.service.EmailService;
+import com.example.WithRun.common.dto.CommonResponseDTO;
+import com.example.WithRun.auth.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.example.WithRun.domain;
+package com.example.WithRun.user.domain;
 
 public enum Gender {
     MALE, FEMALE

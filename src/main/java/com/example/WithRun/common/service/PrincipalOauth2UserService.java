@@ -1,11 +1,11 @@
-package com.example.WithRun.service;
+package com.example.WithRun.common.service;
 
 import com.example.WithRun.config.UserInfo.GoogleUserInfo;
 import com.example.WithRun.config.UserInfo.NaverUserInfo;
 import com.example.WithRun.config.UserInfo.OAuth2UserInfo;
 import com.example.WithRun.config.auth.PrincipalDetails;
-import com.example.WithRun.domain.User;
-import com.example.WithRun.repository.UserRepository;
+import com.example.WithRun.user.domain.User;
+import com.example.WithRun.user.repository.UserRepository;
 import com.example.WithRun.security.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

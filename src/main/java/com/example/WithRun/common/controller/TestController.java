@@ -1,4 +1,4 @@
-package com.example.WithRun.controller;
+package com.example.WithRun.common.controller;
 
 
 import com.example.WithRun.config.auth.PrincipalDetails;

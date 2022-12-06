@@ -1,4 +1,4 @@
-package com.example.WithRun.service;
+package com.example.WithRun.auth.service;
 
 import java.util.Random;
 

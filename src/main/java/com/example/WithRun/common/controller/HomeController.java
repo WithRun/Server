@@ -1,7 +1,7 @@
-package com.example.WithRun.controller;
+package com.example.WithRun.common.controller;
 
-import com.example.WithRun.domain.User;
-import com.example.WithRun.service.UserService;
+import com.example.WithRun.user.domain.User;
+import com.example.WithRun.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ public class HomeController {
         return ResponseEntity.ok().body("WITHRUN HOMEPAGE");
     }
 
-    @GetMapping("/search/user")
+    @PostMapping("/search/user")
     public ResponseEntity<?> searchUser(@RequestHeader String username){
         User findUser = userService.getUserByUsername(username);
         if(findUser==null){

@@ -1,10 +1,11 @@
-package com.example.WithRun.service;
+package com.example.WithRun.auth.service;
 
 
-import com.example.WithRun.domain.User;
-import com.example.WithRun.dto.SignUpDTO;
-import com.example.WithRun.repository.UserRepository;
+import com.example.WithRun.user.domain.User;
+import com.example.WithRun.auth.dto.SignUpDTO;
+import com.example.WithRun.user.repository.UserRepository;
 import com.example.WithRun.security.TokenProvider;
+import com.example.WithRun.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
