@@ -41,17 +41,43 @@ public class FreePostController {
     }
 
 
-    @PostMapping("/post")
-    public ResponseEntity<?> createFreePost(@AuthenticationPrincipal String id,
-                                            @RequestPart MultipartFile image,
-                                            @RequestPart PostingDTO postingDTO) throws IOException {
+//    @PostMapping("/post")
+//    public ResponseEntity<?> createFreePost(@AuthenticationPrincipal String id,
+//                                            @RequestParam(required = false) MultipartFile image
+//                                            ) throws IOException {
+//
+//        User user = userService.getUserById(id);
+//
+//        System.out.println("image @@@@@@@@@@@@@@@@   " + image.getOriginalFilename());
+//        System.out.println("image @@@@@@@@@@@@@@@@   " + image.getContentType());
+//        System.out.println("image @@@@@@@@@@@@@@@@   " + image.getName());
+//
+//        PostingDTO postingDTO = PostingDTO.builder().title("title").content("content").build();
+//
+//        FreePostDTO freePostDTO = freePostService.createFreePost(user,image,postingDTO, "Server");
+//
+//        return ResponseEntity.ok().body(freePostDTO);
+//
+//    }
 
+    @PostMapping("/post/text")
+    public ResponseEntity<?> createFreePostText(@AuthenticationPrincipal String id,
+                                                @RequestBody PostingDTO postingDTO) throws IOException {
         User user = userService.getUserById(id);
-
-        FreePostDTO freePostDTO = freePostService.createFreePost(user,image,postingDTO, "Server");
+        FreePostDTO freePostDTO = freePostService.createFreePostText(user,postingDTO);
 
         return ResponseEntity.ok().body(freePostDTO);
+    }
 
+    @PostMapping("/post/image")
+    public ResponseEntity<?> createFreePostImage(@AuthenticationPrincipal String id,
+                                            @RequestParam(required = false) MultipartFile image
+    ) throws IOException {
+        User user = userService.getUserById(id);
+
+        FreePostDTO freePostDTO = freePostService.createFreePostImage(user,image, "Server");
+
+        return ResponseEntity.ok().body(freePostDTO);
     }
 
 
@@ -96,19 +122,6 @@ public class FreePostController {
 
         return ResponseEntity.ok().body(freePostService.searchPost(keyword));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FreePostImageRepository extends JpaRepository<FreePostImage,Long> {
+
+    FreePostImage findByUrl(String imageUrl);
 }

@@ -76,18 +76,53 @@ public class FreePostService {
         return convertToFreePostDTO(freePostList);
     }
 
-    public FreePostDTO createFreePost(User user, MultipartFile imageFile, PostingDTO postingDTO, String localOrServer) throws IOException {
+//    public FreePostDTO createFreePost(User user, MultipartFile imageFile, PostingDTO postingDTO, String localOrServer) throws IOException {
+//
+//        FreePostImage freePostImage = imageService.uploadFreePostImage(imageFile, user.getId().toString(),localOrServer);
+//
+//        FreePost freePost = FreePost.builder().freePostUser(user).author(user.getUsername())
+//                .title(postingDTO.getTitle()).content(postingDTO.getContent())
+//                .build();
+//        freePost.addFreePostImage(freePostImage);
+//
+//        freePostRepository.save(freePost);
+//        freePostImageRepository.save(freePostImage);
+//
+//
+//        FreePostImageDTO freePostImageDTO = freePostImage.toDto();
+//        FreePostDTO freePostDTO = freePost.toDTO();
+//        freePostDTO.setFreePostImageDTO(freePostImageDTO);
+//
+//        return freePostDTO;
+//    }
 
-        FreePostImage freePostImage = imageService.uploadFreePostImage(imageFile, user.getId().toString(),localOrServer);
+    public FreePostDTO createFreePostText(User user, PostingDTO postingDTO) throws IOException {
+        FreePostImage freePostImage = freePostImageRepository.findByUrl(postingDTO.getImageUrl());
+        FreePost freePost = freePostImage.getFreePostImageFreePost();
+        freePost.setContent(postingDTO.getContent());
+
+        freePostRepository.save(freePost);
+
+        FreePostImageDTO freePostImageDTO = freePostImage.toDto();
+        FreePostDTO freePostDTO = freePost.toDTO();
+        freePostDTO.setFreePostImageDTO(freePostImageDTO);
+
+        return freePostDTO;
+
+        //freepost( img, text) ,,,,,,,
+
+    }
+
+    public FreePostDTO createFreePostImage(User user, MultipartFile imageFile,  String localOrServer) throws IOException {
+
+        FreePostImage freePostImage = imageService.uploadFreePostImage(imageFile, user.getId().toString(), localOrServer);
 
         FreePost freePost = FreePost.builder().freePostUser(user).author(user.getUsername())
-                .title(postingDTO.getTitle()).content(postingDTO.getContent())
                 .build();
         freePost.addFreePostImage(freePostImage);
 
         freePostRepository.save(freePost);
         freePostImageRepository.save(freePostImage);
-
 
         FreePostImageDTO freePostImageDTO = freePostImage.toDto();
         FreePostDTO freePostDTO = freePost.toDTO();
