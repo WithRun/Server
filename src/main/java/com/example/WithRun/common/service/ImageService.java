@@ -1,4 +1,4 @@
-package com.example.WithRun.service;
+package com.example.WithRun.common.service;
 
 
 import com.amazonaws.auth.AWSCredentials;
@@ -10,15 +10,18 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.WithRun.domain.User;
-import com.example.WithRun.dto.ImageDTO;
-import com.example.WithRun.repository.UserRepository;
+import com.example.WithRun.common.dto.ImageDTO;
+import com.example.WithRun.food.domain.FoodImage;
+import com.example.WithRun.food.dto.FoodImageDTO;
+import com.example.WithRun.freepost.domain.FreePostImage;
+import com.example.WithRun.user.repository.UserRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,8 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@NoArgsConstructor
-@PropertySource("classpath:application-aws.yml")
+@Transactional
+//@PropertySource("classpath:application-aws.yml")
 public class ImageService {
     private AmazonS3 s3Client;
 
@@ -85,26 +88,42 @@ public class ImageService {
         return imageDTOList;
     }
 
-    public ImageDTO uploadFreePostImage(MultipartFile file, String userId)throws IOException{
+    public FreePostImage uploadFreePostImage(MultipartFile file, String userId, String localOrServer)throws IOException{
 
         String fileName = file.getOriginalFilename();
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(file.getSize());
         objectMetadata.setContentType(file.getContentType());
         try(InputStream inputStream= file.getInputStream()){
-            String filepath = userId+ "/" + fileName;
+            String filepath = localOrServer +"/"+ userId+ "/" + fileName;
             s3Client.putObject(new PutObjectRequest(bucket,filepath,inputStream,objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
 
-//                s3Client.getUrl(bucket,filepath).toString();
-//                fileNameList.add(s3Client.getUrl(bucket,filepath).toString());
-            return ImageDTO.builder()
-                    .filename(fileName)
+            return FreePostImage.builder()
+                    .name(fileName)
                     .url(s3Client.getUrl(bucket,filepath).toString()).build();
         }catch (IOException e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Upload failed");
         }
     }
+
+    public FoodImage uploadFoodImage(MultipartFile file, String userId, String localOrServer)throws IOException{
+        String fileName = file.getOriginalFilename();
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+        try(InputStream inputStream= file.getInputStream()){
+            String filepath = localOrServer +"/"+userId+ "/"+"food"+"/"+ fileName;
+            s3Client.putObject(new PutObjectRequest(bucket,filepath,inputStream,objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+
+            return FoodImage.builder().filename(fileName)
+                    .imageUrl(s3Client.getUrl(bucket,filepath).toString()).build();
+        }catch (IOException e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Upload failed");
+        }
+    }
+
 
 
 
@@ -125,6 +144,14 @@ public class ImageService {
         s3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
         bucket = "withrun";
     }
+
+    public void deleteFoodImage(String filename, String userId, String localOrServer){
+        bucket = "withrun";
+        bucket +=  "/" + localOrServer + "/" + userId + "/"+"food";
+        s3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
+        bucket = "withrun";
+    }
+
 
     public String getFilePath(MultipartFile file, String userId){
 
