@@ -1,6 +1,6 @@
-package com.example.WithRun.repository;
+package com.example.WithRun.user.repository;
 
-import com.example.WithRun.domain.User;
+import com.example.WithRun.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

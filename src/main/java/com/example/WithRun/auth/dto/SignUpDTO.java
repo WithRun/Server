@@ -1,6 +1,6 @@
-package com.example.WithRun.dto;
+package com.example.WithRun.auth.dto;
 
-import com.example.WithRun.domain.Gender;
+import com.example.WithRun.user.domain.Gender;
 import com.sun.istack.NotNull;
 import lombok.*;
 

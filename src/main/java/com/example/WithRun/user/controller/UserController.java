@@ -1,14 +1,15 @@
-package com.example.WithRun.controller;
+package com.example.WithRun.user.controller;
 
 
-import com.example.WithRun.domain.User;
-import com.example.WithRun.domain.UserImage;
-import com.example.WithRun.domain.UserRating;
-import com.example.WithRun.dto.ImageDTO;
-import com.example.WithRun.dto.RatingDTO;
-import com.example.WithRun.service.AuthService;
-import com.example.WithRun.service.ImageService;
-import com.example.WithRun.service.UserService;
+import com.example.WithRun.user.domain.User;
+import com.example.WithRun.user.domain.UserImage;
+import com.example.WithRun.user.domain.UserRating;
+import com.example.WithRun.common.dto.ImageDTO;
+import com.example.WithRun.user.dto.LocationDTO;
+import com.example.WithRun.user.dto.RatingDTO;
+import com.example.WithRun.auth.service.AuthService;
+import com.example.WithRun.common.service.ImageService;
+import com.example.WithRun.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,7 +37,7 @@ public class UserController {
         User user = userService.getUserById(id);
 
 //        return ResponseEntity.ok().body(user);
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body("FIXING");
     }
 
 
@@ -45,7 +46,7 @@ public class UserController {
                                           @RequestHeader String newName){
         User user = userService.getUserById(id);
         user = userService.changeUsername(user, newName);
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body("FIXING");
     }
 
     @PostMapping("/mypage/upload/image/{id}")
@@ -55,7 +56,7 @@ public class UserController {
         List<ImageDTO> imageDTOList = imageService.upload(images, id);
         UserImage userImage = userService.saveUserImage(imageDTOList,user);
 
-        return ResponseEntity.ok().body(userImage);
+        return ResponseEntity.ok().body("image uploaded.");
     }
 
     @DeleteMapping("/mypage/delete/image/{id}")
@@ -107,9 +108,16 @@ public class UserController {
                                          @RequestHeader @PathVariable String targetId){
         User targetUser = userService.getUserById(targetId);
 
-        return ResponseEntity.ok().body(targetUser);
+        return ResponseEntity.ok().body("FIXING");
 //        return ResponseEntity.ok().body("success");
     }
 
+    @PostMapping("/user/location")
+    public ResponseEntity<?> setUserLocation(@AuthenticationPrincipal String id,
+                                             @RequestBody LocationDTO locationDTO){
+        User user = userService.getUserById(id);
+        userService.setUserLocation(locationDTO,user);
 
+        return ResponseEntity.ok().body(locationDTO);
+    }
 }

@@ -1,16 +1,17 @@
-package com.example.WithRun.service;
+package com.example.WithRun.user.service;
 
 
-import com.example.WithRun.domain.User;
-import com.example.WithRun.domain.UserImage;
-import com.example.WithRun.domain.UserRating;
-import com.example.WithRun.dto.ImageDTO;
-import com.example.WithRun.dto.RatingDTO;
-import com.example.WithRun.dto.SignInDTO;
-import com.example.WithRun.dto.UserDTO;
-import com.example.WithRun.repository.UserImageRepository;
-import com.example.WithRun.repository.UserRatingRepository;
-import com.example.WithRun.repository.UserRepository;
+import com.example.WithRun.auth.dto.SignInDTO;
+import com.example.WithRun.common.dto.ImageDTO;
+import com.example.WithRun.user.domain.User;
+import com.example.WithRun.user.domain.UserImage;
+import com.example.WithRun.user.domain.UserRating;
+import com.example.WithRun.user.dto.LocationDTO;
+import com.example.WithRun.user.dto.RatingDTO;
+import com.example.WithRun.user.dto.UserDTO;
+import com.example.WithRun.user.repository.UserImageRepository;
+import com.example.WithRun.user.repository.UserRatingRepository;
+import com.example.WithRun.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -144,6 +145,15 @@ public class UserService {
 
         user.setMyImage(null);
         userRepository.save(user);
+    }
+
+    public void setUserLocation(LocationDTO locationDTO, User user){
+
+        user.setUserLongitude(locationDTO.getLng());
+        user.setUserLatitude(locationDTO.getLat());
+
+
+
     }
 
 

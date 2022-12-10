@@ -1,6 +1,6 @@
-package com.example.WithRun.dto;
+package com.example.WithRun.user.dto;
 
-import com.example.WithRun.domain.User;
+import com.example.WithRun.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,8 +23,10 @@ public class UserDTO {
     private String email;
     private double avgRating;
     private int level;
-    private int userLatitude;
-    private int userLongitude;
+    private String token;
+    private String lat;
+    private String lng;
+
 
 
     public static UserDTO fromEntity(User user){
@@ -32,7 +34,7 @@ public class UserDTO {
                 .username(user.getUsername()).password(user.getUserPassword())
                 .followingList(user.getFollowingList()).followerList(user.getFollowerList())
                 .email(user.getEmail()).avgRating(user.getAvgRating()).level(user.getLevel())
-                .userLatitude(user.getUserLatitude()).userLongitude(user.getUserLongitude())
+                .lat(user.getUserLatitude()).lng(user.getUserLongitude())
                 .build();
     }
 

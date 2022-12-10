@@ -1,6 +1,11 @@
-package com.example.WithRun.domain;
+package com.example.WithRun.user.domain;
 
 
+import com.example.WithRun.crewinfo.domain.CrewInfo;
+import com.example.WithRun.crewinfo.domain.CrewInfoComment;
+import com.example.WithRun.food.domain.FoodImage;
+import com.example.WithRun.freepost.domain.FreePost;
+import com.example.WithRun.freepost.domain.FreePostComment;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sun.istack.NotNull;
@@ -11,16 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Data
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "json_id")
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
@@ -55,12 +60,15 @@ public class User {
     @OneToMany(mappedBy = "crewInfoCommentUser")
     private List<CrewInfoComment> myCrewInfoCommentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recruitMemberUser")
-    private List<RecruitMember> recruitMemberList = new ArrayList<>();
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_image_id")
     private UserImage myImage;
+
+    @OneToMany(mappedBy = "foodImageUser", cascade = CascadeType.ALL)
+    private List<FoodImage> myFoodImageList = new ArrayList<>();
+
+
+
 
     private String userID;
 
@@ -71,8 +79,8 @@ public class User {
 
     private String provider;
     private String providerId;
-    private int userLatitude;
-    private int userLongitude;
+    private String userLatitude;
+    private String userLongitude;
 
     private String token;
     private double avgRating;
