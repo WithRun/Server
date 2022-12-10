@@ -72,6 +72,7 @@ public class AuthController {
         User getUserInRepo = userService.getUserInRepo(signInDTO);
         if(getUserInRepo.getRole() != null){
             String token = authService.createToken(getUserInRepo);
+            signInDTO.setId(getUserInRepo.getId());
             signInDTO.setToken(token);
             signInDTO.setUsername(getUserInRepo.getUsername());
             signInDTO.setLoginChecked(true);
