@@ -1,7 +1,7 @@
 package com.example.WithRun.config;
 
 import com.example.WithRun.security.JwtAuthenticationFilter;
-import com.example.WithRun.service.PrincipalOauth2UserService;
+import com.example.WithRun.common.service.PrincipalOauth2UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

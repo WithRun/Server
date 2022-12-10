@@ -1,6 +1,6 @@
 package com.example.WithRun.security;
 
-import com.example.WithRun.domain.User;
+import com.example.WithRun.user.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

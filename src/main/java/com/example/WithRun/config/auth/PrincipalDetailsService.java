@@ -1,7 +1,7 @@
 package com.example.WithRun.config.auth;
 
-import com.example.WithRun.domain.User;
-import com.example.WithRun.repository.UserRepository;
+import com.example.WithRun.user.domain.User;
+import com.example.WithRun.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

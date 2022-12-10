@@ -1,7 +1,7 @@
 package com.example.WithRun.config.auth;
 
 
-import com.example.WithRun.domain.User;
+import com.example.WithRun.user.domain.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
