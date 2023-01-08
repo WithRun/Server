@@ -1,4 +1,4 @@
-package com.example.WithRun.domain;
+package com.example.WithRun.user.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -13,8 +13,8 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "json_id")
+@Getter
+@Setter
 public class UserRating {
 
     @Id
