@@ -1,18 +1,19 @@
-package com.example.WithRun.domain;
+package com.example.WithRun.user.domain;
 
 import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class UserImage {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_image_id")
     private Long id;
 
