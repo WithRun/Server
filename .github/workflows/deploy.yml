@@ -29,6 +29,12 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '11'
+        
+    - name: application.yml
+      run: |
+        cd ./src/main/resources
+        touch ./application.yml
+        echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
     
     - name: exec gradlew
       run: chmod +x ./gradlew
