@@ -39,6 +39,8 @@ jobs:
         echo "${{ secrets.APPLICATION_AWS_YML }}" > ./application-aws.yml
         touch ./email.properties
         echo "${{ secrets.EMAIL_PROPERTIES }}" > ./email.properties
+        touch ./application-oauth.yml
+        echo "${{ secrets.APPLICATION_OAUTH_YML }}" > ./application-oauth.yml
     
     - name: exec gradlew
       run: chmod +x ./gradlew
