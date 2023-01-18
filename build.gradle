@@ -37,6 +37,10 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+jar {
+	enabled=false
+}
 //
 //task('release'){
 //	dependsOn("build")
